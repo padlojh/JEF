@@ -16,7 +16,7 @@ local function createAutoButton(buttonName, itemName)
             local currentPosition = rootPart.CFrame
             rootPart.CFrame = item.CFrame
             print("Teleported to " .. itemName .. "!")
-            wait(1) -- รอ 1 วินาที
+            wait(0) -- รอ 1 วินาที
             rootPart.CFrame = currentPosition
             print("Teleported back to original position!")
         else
