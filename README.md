@@ -16,7 +16,7 @@ local function createAutoButton(buttonName, itemName)
             local currentPosition = rootPart.CFrame
             rootPart.CFrame = item.CFrame
             print("Teleported to " .. itemName .. "!")
-            wait(0) -- รอ 1 วินาที
+            wait(0.5) -- รอ 1 วินาที
             rootPart.CFrame = currentPosition
             print("Teleported back to original position!")
         else
@@ -51,7 +51,7 @@ local function toggleAutoMoney(state)
                     local currentPosition = rootPart.CFrame
                     rootPart.CFrame = moneyItem.CFrame
                     print("Teleported to Money!")
-                    wait(0) -- รอ 1 วินาที
+                    wait(0.5) -- รอ 1 วินาที
                     rootPart.CFrame = currentPosition
                     print("Teleported back to original position!")
                     wait(0) -- รอ 1 วินาทีเพื่อไม่ให้วนซ้ำเร็วเกินไป
