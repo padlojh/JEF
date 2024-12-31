@@ -46,21 +46,72 @@ createAutoButton("Auto Handgun", "Handgun")
 createAutoButton("Auto Shotgun", "Shotgun")
 createAutoButton("Auto Shells", "Shells")
 
--- แท็บสำหรับการตั้งค่า
-local SettingsTab = Window:NewTab("Settings")
-local SettingsSection = SettingsTab:NewSection("GUI Settings")
+-- เพิ่ม Section ใหม่ใน Tab Auto สำหรับการเก็บเงิน
+local CollectSection = AutoTab:NewSection("Collect")
+local moneyToggle
 
--- สร้างกรอบเลื่อนสำหรับปุ่มต่าง ๆ
-local ScrollingFrame = SettingsSection:NewScrollingFrame("Settings Scroll", "Scroll through settings", 200, 300)
+-- ฟังก์ชันสำหรับเปิด/ปิดการเก็บเงิน
+local function toggleAutoMoney(state)
+    if state then
+        moneyToggle = true
+        spawn(function()
+            while moneyToggle do
+                local moneyItem = game:GetService("Workspace").Pickups:FindFirstChild("Money")
+                if moneyItem then
+                    local rootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
+                    rootPart.CFrame = moneyItem.CFrame
+                    print("Teleported to Money!")
+                    wait(0) -- รอ 1 วินาทีเพื่อไม่ให้วนซ้ำเร็วเกินไป
+                else
+                    print("No money!")
+                    wait(2) -- หากไม่มี Money, รอ 2 วินาทีแล้วค่อยลองใหม่
+                end
+            end
+        end)
+    else
+        moneyToggle = false
+    end
+end
 
--- ปุ่มสำหรับสลับการแสดงผลของ GUI
-ScrollingFrame:NewButton("Toggle GUI", "คลิกเพื่อสลับการแสดงผลของ GUI", function()
-    toggleGUI()
+-- สร้างปุ่ม Auto Money ที่สามารถเปิด/ปิดได้
+CollectSection:NewToggle("Auto Money", "Click to Toggle Auto Money", function(state)
+    toggleAutoMoney(state)
 end)
 
--- การตั้งค่าปุ่มลัดสำหรับเปิด/ปิด GUI
-ScrollingFrame:NewKeybind("Toggle Keybind", "กดปุ่มที่ต้องการใช้เปิด/ปิด GUI", Enum.KeyCode.F, function()
-    toggleGUI()
+-- แท็บใหม่สำหรับ Misc (ลบทั้งหมดใน Section)
+local MiscTab = Window:NewTab("Misc")
+
+-- ลบ Section ที่มีอยู่แล้วใน Misc Tab และเพิ่ม Section ใหม่
+local MiscSection = MiscTab:NewSection("Misc")
+
+-- ฟังก์ชัน Fullbright
+local Lighting = game:GetService("Lighting")
+local fullbrightToggle = false
+
+local function brightFunc()
+    Lighting.Brightness = 2
+    Lighting.ClockTime = 14
+    Lighting.FogEnd = 100000
+    Lighting.GlobalShadows = false
+    Lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
+end
+
+-- สร้างปุ่ม Fullbright ที่สามารถเปิด/ปิดได้
+MiscSection:NewToggle("Fullbright", "Click to Toggle Fullbright", function(state)
+    if state then
+        fullbrightToggle = true
+        brightFunc()
+        print("Fullbright Enabled")
+    else
+        fullbrightToggle = false
+        -- Reset ค่า Lighting กลับไปยังค่าเริ่มต้น
+        Lighting.Brightness = 1
+        Lighting.ClockTime = 12
+        Lighting.FogEnd = 1000
+        Lighting.GlobalShadows = true
+        Lighting.OutdoorAmbient = Color3.fromRGB(255, 255, 255)
+        print("Fullbright Disabled")
+    end
 end)
 
 -- แท็บสำหรับการตั้งค่าผู้เล่น
