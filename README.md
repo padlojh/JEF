@@ -8,28 +8,14 @@ local AutoSection = AutoTab:NewSection("Option Auto")
 -- ฟังก์ชันสำหรับสร้างปุ่ม Auto
 local function createAutoButton(buttonName, itemName)
     AutoSection:NewButton(buttonName, "Click to Toggle", function()
-        local TweenService = game:GetService("TweenService")
         local player = game.Players.LocalPlayer
         local rootPart = player.Character.HumanoidRootPart
         local item = game:GetService("Workspace").Pickups:FindFirstChild(itemName)
 
         if item then
-            local speed = 400
-            local distance = (item.Position - rootPart.Position).Magnitude
-            local time = distance / speed
-
-            local goal = {}
-            goal.CFrame = item.CFrame
-
-            local tweenInfo = TweenInfo.new(time, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
-            local tween = TweenService:Create(rootPart, tweenInfo, goal)
-
-            tween:Play()
-
-            tween.Completed:Connect(function()
-                print("Teleported to " .. itemName .. "!")
-                -- เพิ่มโค้ดที่ต้องการให้ทำงานเมื่อถึงตำแหน่งของ "itemName"
-            end)
+            rootPart.CFrame = item.CFrame
+            print("Teleported to " .. itemName .. "!")
+            -- เพิ่มโค้ดที่ต้องการให้ทำงานเมื่อถึงตำแหน่งของ "itemName"
         else
             print(itemName .. " not found!")
         end
@@ -100,12 +86,7 @@ end
 local function toggleFullbright(state)
     if state then
         fullbrightToggle = true
-        spawn(function()
-            while fullbrightToggle do
-                brightFunc()
-                wait(0) -- ปรับความเร็วในการปรับค่าของ Lighting
-            end
-        end)
+        brightFunc()
         print("Fullbright Enabled")
     else
         fullbrightToggle = false
@@ -122,6 +103,20 @@ end
 -- สร้างปุ่ม Fullbright ที่สามารถเปิด/ปิดได้
 MiscSection:NewToggle("Fullbright", "Click to Toggle Fullbright", function(state)
     toggleFullbright(state)
+end)
+
+-- เพิ่มปุ่ม Auto Bullets ใน Section Option Auto
+AutoSection:NewButton("Auto Bullets", "Click to Teleport to Bullets", function()
+    local player = game.Players.LocalPlayer
+    local rootPart = player.Character.HumanoidRootPart
+    local bulletsItem = game:GetService("Workspace").Pickups:FindFirstChild("Bullets")
+
+    if bulletsItem then
+        rootPart.CFrame = bulletsItem.CFrame
+        print("Teleported to Bullets!")
+    else
+        print("Bullets not found!")
+    end
 end)
 
 -- แท็บสำหรับการตั้งค่าผู้เล่น
