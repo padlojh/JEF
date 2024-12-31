@@ -103,7 +103,7 @@ local function toggleFullbright(state)
         spawn(function()
             while fullbrightToggle do
                 brightFunc()
-                wait(0.1) -- ปรับความเร็วในการปรับค่าของ Lighting
+                wait(0) -- ปรับความเร็วในการปรับค่าของ Lighting
             end
         end)
         print("Fullbright Enabled")
