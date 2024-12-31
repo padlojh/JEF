@@ -16,9 +16,12 @@ local function createAutoButton(buttonName, itemName)
             local currentPosition = rootPart.CFrame
             rootPart.CFrame = item.CFrame
             print("Teleported to " .. itemName .. "!")
-            wait(3) -- รอ 1 วินาที
+            while item.Parent do -- Continue checking until item disappears
+                wait(1) -- Wait to ensure the teleport is active
+            end
+            -- If the item disappears, teleport back
             rootPart.CFrame = currentPosition
-            print("Teleported back to original position!")
+            print("Item disappeared, teleported back to original position!")
         else
             print(itemName .. " not found!")
         end
@@ -51,13 +54,16 @@ local function toggleAutoMoney(state)
                     local currentPosition = rootPart.CFrame
                     rootPart.CFrame = moneyItem.CFrame
                     print("Teleported to Money!")
-                    wait(3) -- รอ 1 วินาที
+                    while moneyItem.Parent do -- Continue checking until money disappears
+                        wait(1) -- Wait to ensure the teleport is active
+                    end
+                    -- If the money item disappears, teleport back
                     rootPart.CFrame = currentPosition
-                    print("Teleported back to original position!")
-                    wait(0) -- รอ 1 วินาทีเพื่อไม่ให้วนซ้ำเร็วเกินไป
+                    print("Money disappeared, teleported back to original position!")
+                    wait(0) -- Wait to avoid rapid repeats
                 else
                     print("No money!")
-                    wait(2) -- หากไม่มี Money, รอ 2 วินาทีแล้วค่อยลองใหม่
+                    wait(2) -- If no Money, wait 2 seconds before retrying
                 end
             end
         end)
@@ -122,9 +128,12 @@ AutoSection:NewButton("Auto Bullets", "Click to Teleport to Bullets", function()
         local currentPosition = rootPart.CFrame
         rootPart.CFrame = bulletsItem.CFrame
         print("Teleported to Bullets!")
-        wait(1) -- รอ 1 วินาที
+        while bulletsItem.Parent do -- Continue checking until bullets disappear
+            wait(1) -- Wait to ensure the teleport is active
+        end
+        -- If the bullets disappear, teleport back
         rootPart.CFrame = currentPosition
-        print("Teleported back to original position!")
+        print("Bullets disappeared, teleported back to original position!")
     else
         print("Bullets not found!")
     end
@@ -136,14 +145,3 @@ local PlayerSection = PlayerTab:NewSection("Option players")
 PlayerSection:NewSlider("WalkSpeed", "ปรับ WalkSpeed สูงสุด 200", 200, 0, function(value)
     game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
 end)
-
-
-
-
-
-
-
-
-
-
-
