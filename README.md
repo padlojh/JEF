@@ -13,9 +13,12 @@ local function createAutoButton(buttonName, itemName)
         local item = game:GetService("Workspace").Pickups:FindFirstChild(itemName)
 
         if item then
+            local currentPosition = rootPart.CFrame
             rootPart.CFrame = item.CFrame
             print("Teleported to " .. itemName .. "!")
-            -- เพิ่มโค้ดที่ต้องการให้ทำงานเมื่อถึงตำแหน่งของ "itemName"
+            wait(1) -- รอ 1 วินาที
+            rootPart.CFrame = currentPosition
+            print("Teleported back to original position!")
         else
             print(itemName .. " not found!")
         end
@@ -45,8 +48,12 @@ local function toggleAutoMoney(state)
                 local moneyItem = game:GetService("Workspace").Pickups:FindFirstChild("Money")
                 if moneyItem then
                     local rootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
+                    local currentPosition = rootPart.CFrame
                     rootPart.CFrame = moneyItem.CFrame
                     print("Teleported to Money!")
+                    wait(0) -- รอ 1 วินาที
+                    rootPart.CFrame = currentPosition
+                    print("Teleported back to original position!")
                     wait(0) -- รอ 1 วินาทีเพื่อไม่ให้วนซ้ำเร็วเกินไป
                 else
                     print("No money!")
@@ -112,8 +119,12 @@ AutoSection:NewButton("Auto Bullets", "Click to Teleport to Bullets", function()
     local bulletsItem = game:GetService("Workspace").Pickups:FindFirstChild("Bullets")
 
     if bulletsItem then
+        local currentPosition = rootPart.CFrame
         rootPart.CFrame = bulletsItem.CFrame
         print("Teleported to Bullets!")
+        wait(1) -- รอ 1 วินาที
+        rootPart.CFrame = currentPosition
+        print("Teleported back to original position!")
     else
         print("Bullets not found!")
     end
@@ -125,3 +136,14 @@ local PlayerSection = PlayerTab:NewSection("Option players")
 PlayerSection:NewSlider("WalkSpeed", "ปรับ WalkSpeed สูงสุด 200", 200, 0, function(value)
     game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
 end)
+
+
+
+
+
+
+
+
+
+
+
