@@ -96,15 +96,20 @@ local function brightFunc()
     Lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
 end
 
--- สร้างปุ่ม Fullbright ที่สามารถเปิด/ปิดได้
-MiscSection:NewToggle("Fullbright", "Click to Toggle Fullbright", function(state)
+-- ฟังก์ชันสำหรับเปิด/ปิด Fullbright
+local function toggleFullbright(state)
     if state then
         fullbrightToggle = true
-        brightFunc()
+        spawn(function()
+            while fullbrightToggle do
+                brightFunc()
+                wait(0.1) -- ปรับความเร็วในการปรับค่าของ Lighting
+            end
+        end)
         print("Fullbright Enabled")
     else
         fullbrightToggle = false
-        -- Reset ค่า Lighting กลับไปยังค่าเริ่มต้น
+        -- รีเซ็ตค่า Lighting กลับไปยังค่าเริ่มต้น
         Lighting.Brightness = 1
         Lighting.ClockTime = 12
         Lighting.FogEnd = 1000
@@ -112,6 +117,11 @@ MiscSection:NewToggle("Fullbright", "Click to Toggle Fullbright", function(state
         Lighting.OutdoorAmbient = Color3.fromRGB(255, 255, 255)
         print("Fullbright Disabled")
     end
+end
+
+-- สร้างปุ่ม Fullbright ที่สามารถเปิด/ปิดได้
+MiscSection:NewToggle("Fullbright", "Click to Toggle Fullbright", function(state)
+    toggleFullbright(state)
 end)
 
 -- แท็บสำหรับการตั้งค่าผู้เล่น
