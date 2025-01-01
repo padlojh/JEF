@@ -1,34 +1,44 @@
--- สคริปต์ที่ปรับแต่ง Kavo UI Library เพื่อรองรับการลากบนมือถือและคอมพิวเตอร์
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 local Window = Library.CreateLib("PAD HUB", "DarkTheme")
 
+-- Auto Tab
 local AutoTab = Window:NewTab("Auto")
 local AutoSection = AutoTab:NewSection("Option Auto")
 
--- ฟังก์ชันสำหรับสร้างปุ่ม Auto
 local function createAutoButton(buttonName, itemName)
     AutoSection:NewButton(buttonName, "Click to Toggle", function()
         local player = game.Players.LocalPlayer
         local rootPart = player.Character.HumanoidRootPart
-        local item = game:GetService("Workspace").Pickups:FindFirstChild(itemName)
+        local pickups = game:GetService("Workspace").Pickups:GetChildren()
 
-        if item then
-            local currentPosition = rootPart.CFrame
-            rootPart.CFrame = item.CFrame
-            print("Teleported to " .. itemName .. "!")
-            while item.Parent do -- Continue checking until item disappears
-                wait(1) -- Wait to ensure the teleport is active
+        local furthestDistance = 0
+        local furthestItem = nil
+
+        for _, item in pairs(pickups) do
+            if item.Name == itemName then
+                local distance = (item.Position - rootPart.Position).Magnitude
+                if distance > furthestDistance then
+                    furthestDistance = distance
+                    furthestItem = item
+                end
             end
-            -- If the item disappears, teleport back
+        end
+
+        if furthestItem then
+            local currentPosition = rootPart.CFrame
+            rootPart.CFrame = furthestItem.CFrame
+            print("Teleported to " .. itemName .. "!")
+            while furthestItem.Parent do
+                wait(1)
+            end
             rootPart.CFrame = currentPosition
-            print("Item disappeared, teleported back to original position!")
+            print(itemName .. " disappeared, teleported back to original position!")
         else
-            print(itemName .. " not found!")
+            print(itemName .. " not found! Please wait for item respawn.")
         end
     end)
 end
 
--- สร้างปุ่ม Auto สำหรับไอเท็มต่าง ๆ
 createAutoButton("Auto Food", "Food")
 createAutoButton("Auto Soda", "Soda")
 createAutoButton("Auto Medkit", "Medkit")
@@ -37,12 +47,12 @@ createAutoButton("Auto Crowbar", "Crowbar")
 createAutoButton("Auto Handgun", "Handgun")
 createAutoButton("Auto Shotgun", "Shotgun")
 createAutoButton("Auto Shells", "Shells")
+createAutoButton("Auto Hammer", "Hammer")
+createAutoButton("Auto Lantern", "Lantern")
 
--- เพิ่ม Section ใหม่ใน Tab Auto สำหรับการเก็บเงิน
 local CollectSection = AutoTab:NewSection("Collect")
 local moneyToggle
 
--- ฟังก์ชันสำหรับเปิด/ปิดการเก็บเงิน
 local function toggleAutoMoney(state)
     if state then
         moneyToggle = true
@@ -54,16 +64,15 @@ local function toggleAutoMoney(state)
                     local currentPosition = rootPart.CFrame
                     rootPart.CFrame = moneyItem.CFrame
                     print("Teleported to Money!")
-                    while moneyItem.Parent do -- Continue checking until money disappears
-                        wait(1) -- Wait to ensure the teleport is active
+                    while moneyItem.Parent do
+                        wait(1)
                     end
-                    -- If the money item disappears, teleport back
                     rootPart.CFrame = currentPosition
                     print("Money disappeared, teleported back to original position!")
-                    wait(0) -- Wait to avoid rapid repeats
+                    wait(0)
                 else
-                    print("No money!")
-                    wait(2) -- If no Money, wait 2 seconds before retrying
+                    print("No money! Please wait for item respawn.")
+                    wait(2)
                 end
             end
         end)
@@ -72,76 +81,62 @@ local function toggleAutoMoney(state)
     end
 end
 
--- สร้างปุ่ม Auto Money ที่สามารถเปิด/ปิดได้
 CollectSection:NewToggle("Auto Money", "Click to Toggle Auto Money", function(state)
     toggleAutoMoney(state)
 end)
 
--- แท็บใหม่สำหรับ Misc (ลบทั้งหมดใน Section)
-local MiscTab = Window:NewTab("Misc")
-
--- ลบ Section ที่มีอยู่แล้วใน Misc Tab และเพิ่ม Section ใหม่
-local MiscSection = MiscTab:NewSection("Misc")
-
--- ฟังก์ชัน Fullbright
-local Lighting = game:GetService("Lighting")
-local fullbrightToggle = false
-
-local function brightFunc()
-    Lighting.Brightness = 2
-    Lighting.ClockTime = 14
-    Lighting.FogEnd = 100000
-    Lighting.GlobalShadows = false
-    Lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
-end
-
--- ฟังก์ชันสำหรับเปิด/ปิด Fullbright
-local function toggleFullbright(state)
-    if state then
-        fullbrightToggle = true
-        brightFunc()
-        print("Fullbright Enabled")
-    else
-        fullbrightToggle = false
-        -- รีเซ็ตค่า Lighting กลับไปยังค่าเริ่มต้น
-        Lighting.Brightness = 1
-        Lighting.ClockTime = 12
-        Lighting.FogEnd = 1000
-        Lighting.GlobalShadows = true
-        Lighting.OutdoorAmbient = Color3.fromRGB(255, 255, 255)
-        print("Fullbright Disabled")
-    end
-end
-
--- สร้างปุ่ม Fullbright ที่สามารถเปิด/ปิดได้
-MiscSection:NewToggle("Fullbright", "Click to Toggle Fullbright", function(state)
-    toggleFullbright(state)
-end)
-
--- เพิ่มปุ่ม Auto Bullets ใน Section Option Auto
-AutoSection:NewButton("Auto Bullets", "Click to Teleport to Bullets", function()
-    local player = game.Players.LocalPlayer
-    local rootPart = player.Character.HumanoidRootPart
-    local bulletsItem = game:GetService("Workspace").Pickups:FindFirstChild("Bullets")
-
-    if bulletsItem then
-        local currentPosition = rootPart.CFrame
-        rootPart.CFrame = bulletsItem.CFrame
-        print("Teleported to Bullets!")
-        while bulletsItem.Parent do -- Continue checking until bullets disappear
-            wait(1) -- Wait to ensure the teleport is active
-        end
-        -- If the bullets disappear, teleport back
-        rootPart.CFrame = currentPosition
-        print("Bullets disappeared, teleported back to original position!")
-    else
-        print("Bullets not found!")
-    end
-end)
-
--- แท็บสำหรับการตั้งค่าผู้เล่น
+-- Player Tab
 local PlayerTab = Window:NewTab("Player")
 local PlayerSection = PlayerTab:NewSection("Option players")
 PlayerSection:NewSlider("WalkSpeed", "ปรับ WalkSpeed สูงสุด 200", 200, 0, function(value)
     game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
+end)
+
+-- Misc Tab
+local MiscTab = Window:NewTab("Misc")
+local MiscSection = MiscTab:NewSection("Misc Option")
+
+-- สร้าง Dropdowns ชื่อ Theme UI ใน Section Select Theme UI
+MiscSection:NewDropdown("Theme UI", "เลือกธีมของ UI", {"LightTheme", "DarkTheme", "GrapeTheme", "BloodTheme", "Ocean", "Midnight", "Sentinel", "Synapse"}, function(selectedTheme)
+    -- เปลี่ยนธีมของ UI ตามที่เลือก
+    Window:ChangeTheme(selectedTheme)
+end)
+
+-- สร้างปุ่ม Change Theme ใน Misc Tab
+MiscSection:NewButton("Change Theme", "เปลี่ยนธีมของ UI ตามที่เลือก", function()
+    local selectedTheme = MiscSection:GetDropdown("Theme UI"):GetSelected()
+    if selectedTheme then
+        Window:ChangeTheme(selectedTheme)
+        print("ธีมของ UI ถูกเปลี่ยนเป็น " .. selectedTheme)
+    else
+        print("กรุณาเลือกธีมจาก Dropdown ก่อน")
+    end
+end)
+
+-- เพิ่มปุ่มในแท็บ Misc
+MiscSection:NewButton("Open ESP Player", "สร้าง Highlight สำหรับผู้เล่นทั้งหมดในเซิร์ฟเวอร์", function()
+    for _, player in pairs(game.Players:GetPlayers()) do
+        if player.Character and player.Character:FindFirstChild("Head") then
+            local highlight = Instance.new("Highlight")
+            highlight.Parent = player.Character
+            highlight.Adornee = player.Character
+            highlight.FillColor = Color3.fromRGB(255, 0, 0) -- สีแดง
+            highlight.FillTransparency = 0.5
+            highlight.OutlineColor = Color3.fromRGB(0, 0, 0) -- สีดำ
+            highlight.OutlineTransparency = 0.5
+        end
+    end
+    print("สร้าง Highlight สำหรับผู้เล่นทั้งหมดในเซิร์ฟเวอร์แล้ว")
+end)
+
+MiscSection:NewButton("Remove ESP Player", "ลบ Highlight ที่สร้างขึ้นทั้งหมด", function()
+    for _, player in pairs(game.Players:GetPlayers()) do
+        if player.Character and player.Character:FindFirstChild("Head") then
+            local highlight = player.Character:FindFirstChildOfClass("Highlight")
+            if highlight then
+                highlight:Destroy()
+            end
+        end
+    end
+    print("ลบ Highlight ที่สร้างขึ้นทั้งหมดแล้ว")
 end)
