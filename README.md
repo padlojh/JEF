@@ -5,6 +5,7 @@ local Window = Library.CreateLib("PAD HUB", "DarkTheme")
 local AutoTab = Window:NewTab("Auto")
 local AutoSection = AutoTab:NewSection("Option Auto")
 
+-- ฟังก์ชันสำหรับสร้างปุ่มอัตโนมัติ
 local function createAutoButton(buttonName, itemName)
     AutoSection:NewButton(buttonName, "Click to Toggle", function()
         local player = game.Players.LocalPlayer
@@ -39,17 +40,40 @@ local function createAutoButton(buttonName, itemName)
     end)
 end
 
+-- สร้างปุ่มสำหรับ Auto Bullets
+createAutoButton("Auto Bullets", "Bullets")
+
+-- สร้างปุ่มสำหรับ Auto Food
 createAutoButton("Auto Food", "Food")
+
+-- สร้างปุ่มสำหรับ Auto Soda
 createAutoButton("Auto Soda", "Soda")
+
+-- สร้างปุ่มสำหรับ Auto Medkit
 createAutoButton("Auto Medkit", "Medkit")
+
+-- สร้างปุ่มสำหรับ Auto Bat
 createAutoButton("Auto Bat", "Bat")
+
+-- สร้างปุ่มสำหรับ Auto Crowbar
 createAutoButton("Auto Crowbar", "Crowbar")
+
+-- สร้างปุ่มสำหรับ Auto Handgun
 createAutoButton("Auto Handgun", "Handgun")
+
+-- สร้างปุ่มสำหรับ Auto Shotgun
 createAutoButton("Auto Shotgun", "Shotgun")
+
+-- สร้างปุ่มสำหรับ Auto Shells
 createAutoButton("Auto Shells", "Shells")
+
+-- สร้างปุ่มสำหรับ Auto Hammer
 createAutoButton("Auto Hammer", "Hammer")
+
+-- สร้างปุ่มสำหรับ Auto Lantern
 createAutoButton("Auto Lantern", "Lantern")
 
+-- Collect Section
 local CollectSection = AutoTab:NewSection("Collect")
 local moneyToggle
 
